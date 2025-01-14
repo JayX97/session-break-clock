@@ -1,14 +1,17 @@
 const Dial = (props) => {
     const label = props.label;
-    const initValue = props.initValue;
+    const value = props.value;
+    const onIncrement = props.onIncrement;
+    const onDecrement = props.onDecrement;
+    const idLabel = label.toLowerCase();
 
     return (
         <div className="dial">
-            <h2 className={`${label.toLowerCase()}-label`}>{label + " Length"}</h2>
+            <h2 id={`${idLabel}-label`}>{label + " Length"}</h2>
             <div className="buttons">
-                <button></button>
-                <h2 className={`${label.toLowerCase()}-length`}>{initValue}</h2>
-                <button></button>
+                <button id={`${idLabel}-decrement`} onClick={onDecrement}>-</button>
+                <h2 id={`${idLabel}-length`}>{value}</h2>
+                <button id={`${idLabel}-increment`} onClick={onIncrement}>+</button>
             </div>
         </div>
     );
