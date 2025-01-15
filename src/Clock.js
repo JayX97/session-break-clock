@@ -1,53 +1,55 @@
 import { useState, useEffect } from "react";
 import Dial from "./Dial.js";
 
-const Clock = () => {
+const timeRemaining = (seconds) => {// function used to display remaining time on timer
+    const remainingMinutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return remainingMinutes.toString().padStart(2, '0') + ":" + remainingSeconds.toString().padStart(2, '0');
+};
+
+const Clock = () => {    
     const [countingDown, setCountingDown] = useState(false);
-    const [sessionValue, setSessionValue] = useState(25);
-    const [breakValue, setBreakValue] = useState(5);
+    // display variables
+    const [sessionTime, setSessionTime] = useState(25);
+    const [breakTime, setBreakTime] = useState(5);
     // variables used for countdown
-    var sessionSeconds = sessionValue * 60;
-    var breakSeconds = breakValue * 60;
-    const [currentTime, setCurrentTime] = useState(sessionSeconds);
-
-    const timeRemaining = (seconds) => {// functions used to display remaining time on timer
-        const remainingMinutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-
-        return remainingMinutes.toString().padStart(2, '0') + ":" + remainingSeconds.toString().padStart(2, '0');
-    };
+    const [sessionValue, setSessionValue] = useState(sessionTime * 60);
+    const [breakValue, setBreakValue] = useState(breakTime * 60);
+    // timer display
+    var currentTime = sessionValue;
 
     // increment and decrement functions
-    const incrementSessionValue = () => {
-        if (countingDown === false && sessionValue < 60) {
-            setSessionValue(sessionValue + 1);
-        };
+    const incrementSessionTime = () => {
+        if (countingDown === false && sessionTime < 60) {
+            setSessionTime(sessionTime + 1);
+            setSessionValue(sessionValue + 60);
+        }
 
-        sessionSeconds = sessionValue * 60;
+        console.log(sessionValue);
     };
 
-    const decrementSessionValue = () => {
-        if (countingDown === false && sessionValue > 1) {
-            setSessionValue(sessionValue - 1);
-        };
+    const decrementSessionTIme = () => {
+        if (countingDown === false && sessionValue > 60) {
+            setSessionTime(sessionTime - 1);
+            setSessionValue(sessionValue - 60);
+        }
 
-        sessionSeconds = sessionValue * 60;
+        console.log(sessionValue);
     };
 
-    const incrementBreakValue = () => {
-        if (countingDown === false && breakValue < 60) {
-            setBreakValue(breakValue + 1);
-        };
-
-        breakSeconds = breakValue * 60;
+    const incrementBreakTime = () => {
+        if (countingDown === false && breakValue < 3600) {
+            setBreakTime(breakTime + 1);
+            setBreakValue(breakValue + 60);
+        }
     };
 
-    const decrementBreakValue = () => {
-        if (countingDown === false && breakValue > 1) {
-            setBreakValue(breakValue - 1);
-        };
-
-        breakSeconds = breakValue * 60;
+    const decrementBreakTime = () => {
+        if (countingDown === false && breakValue > 60) {
+            setBreakTime(breakTime - 1);
+            setBreakValue(breakValue - 60);
+        }
     };
 
     // timer control functions
@@ -55,24 +57,27 @@ const Clock = () => {
         setCountingDown(!countingDown);
     };
 
-    useEffect(() => {
+    useEffect(() => { // ** timer using setInterval **
         var interval;
-        if (countingDown === true && currentTime > 0) {
+        
+        if (countingDown === true && sessionValue > 0) {
             interval = setInterval(() => {
-                setCurrentTime((currentTime) => currentTime - 1);
+                setSessionValue(sessionValue - 1);
             }, 1000); // use state variables
         }
+        
 
-        console.log(sessionSeconds);
+        console.log("Session seconds: " + sessionValue);
+        console.log(countingDown);
 
         return () => clearInterval(interval);
-    }, [currentTime, countingDown]);
+    }, [sessionValue, countingDown]);
 
     return (
         <div className="clock">
             <div className="clock-dials">
-                <Dial label="Session" value={sessionValue} onIncrement={incrementSessionValue} onDecrement={decrementSessionValue} />
-                <Dial label="Break" value={breakValue} onIncrement={incrementBreakValue} onDecrement={decrementBreakValue} />
+                <Dial label="Session" value={sessionTime} onIncrement={incrementSessionTime} onDecrement={decrementSessionTIme} />
+                <Dial label="Break" value={breakTime} onIncrement={incrementBreakTime} onDecrement={decrementBreakTime} />
             </div>
             <div className="timer">
                 <h2 id="timer-label">Session</h2>
