@@ -8,84 +8,109 @@ const timeRemaining = (seconds) => {// function used to display remaining time o
     return remainingMinutes.toString().padStart(2, '0') + ":" + remainingSeconds.toString().padStart(2, '0');
 };
 
-const Clock = () => {    
-    const [countingDown, setCountingDown] = useState(false);
-    // display variables
-    const [sessionTime, setSessionTime] = useState(25);
-    const [breakTime, setBreakTime] = useState(5);
-    // variables used for countdown
-    const [sessionValue, setSessionValue] = useState(sessionTime * 60);
-    const [breakValue, setBreakValue] = useState(breakTime * 60);
-    // timer display
-    var currentTime = sessionValue;
+const Clock = () => {
+    const [state, setState] = useState({// object used to store all state variables of timer
+        label: "Session",
+        countingDown: false,
+        sessionTime: 25,
+        breakTime: 5,
+        sessionValue: 25 * 60,
+        breakValue: 5 * 60
+    });
 
     // increment and decrement functions
     const incrementSessionTime = () => {
-        if (countingDown === false && sessionTime < 60) {
-            setSessionTime(sessionTime + 1);
-            setSessionValue(sessionValue + 60);
+        if (state.countingDown === false && state.sessionTime < 60) {
+            setState(prev => ({
+                ...prev,
+                sessionTime: state.sessionTime + 1,
+                sessionValue: (state.sessionTime * 60) + 60,
+            }));
         }
-
-        console.log(sessionValue);
     };
 
-    const decrementSessionTIme = () => {
-        if (countingDown === false && sessionValue > 60) {
-            setSessionTime(sessionTime - 1);
-            setSessionValue(sessionValue - 60);
+    const decrementSessionTime = () => {
+        if (state.countingDown === false && state.sessionTime > 1) {
+            setState(prev => ({
+                ...prev,
+                sessionTime: state.sessionTime - 1,
+                sessionValue: (state.sessionTime * 60) - 60,
+            }));
         }
-
-        console.log(sessionValue);
     };
 
     const incrementBreakTime = () => {
-        if (countingDown === false && breakValue < 3600) {
-            setBreakTime(breakTime + 1);
-            setBreakValue(breakValue + 60);
+        if (state.countingDown === false && state.breakTime < 60) {
+            setState(prev => ({
+                ...prev,
+                breakTime: state.breakTime + 1,
+                breakValue: (state.breakTime * 60) + 60,
+            }));
         }
     };
 
     const decrementBreakTime = () => {
-        if (countingDown === false && breakValue > 60) {
-            setBreakTime(breakTime - 1);
-            setBreakValue(breakValue - 60);
+        if (state.countingDown === false && state.breakTime > 1) {
+            setState(prev => ({
+                ...prev,
+                breakTime: state.breakTime - 1,
+                breakValue: (state.breakTime * 60) - 60,
+            }));
         }
+    };
+
+    //timer reset functions
+    const handleReset = () => {// resets entire app to default state
+        setState({
+            label: "Session",
+            countingDown: false,
+            sessionTime: 25,
+            breakTime: 5,
+            sessionValue: 25 * 60,
+            breakValue: 5 * 60
+        });
     };
 
     // timer control functions
     const toggleStartPause = () => {
-        setCountingDown(!countingDown);
+        setState(prev => ({...prev, countingDown: !state.countingDown}));
     };
 
     useEffect(() => { // ** timer using setInterval **
-        var interval;
-        
-        if (countingDown === true && sessionValue > 0) {
-            interval = setInterval(() => {
-                setSessionValue(sessionValue - 1);
-            }, 1000); // use state variables
+        var timer;
+
+        if (state.countingDown === true) {
+            timer = setInterval(() => {
+                if (state.label === "Session") {
+                    if (state.sessionValue > 0) setState(prev => ({...prev, sessionValue: state.sessionValue - 1}));
+                    else setState(prev => ({...prev, label: "Break", sessionValue: (prev.sessionTime * 60)}));
+                } else {
+                    if (state.breakValue > 0) setState(prev => ({...prev, breakValue: state.breakValue - 1}));
+                    else setState(prev => ({...prev, label: "Session", breakValue: (prev.breakTime * 60)}));
+                }
+            }, 1000);
         }
-        
 
-        console.log("Session seconds: " + sessionValue);
-        console.log(countingDown);
-
-        return () => clearInterval(interval);
-    }, [sessionValue, countingDown]);
+        return () => clearInterval(timer);
+    }, [state.label, state.sessionValue, state.breakValue, state.countingDown]);
 
     return (
         <div className="clock">
             <div className="clock-dials">
-                <Dial label="Session" value={sessionTime} onIncrement={incrementSessionTime} onDecrement={decrementSessionTIme} />
-                <Dial label="Break" value={breakTime} onIncrement={incrementBreakTime} onDecrement={decrementBreakTime} />
+                <Dial label="Session" value={state.sessionTime} onIncrement={incrementSessionTime} onDecrement={decrementSessionTime} />
+                <Dial label="Break" value={state.breakTime} onIncrement={incrementBreakTime} onDecrement={decrementBreakTime} />
             </div>
             <div className="timer">
-                <h2 id="timer-label">Session</h2>
-                <p id="time-left">{timeRemaining(currentTime)}</p>
+                <h2 id="timer-label">{state.label}</h2>
+                {// ** conditional rendering to display respective timer for label **
+                state.label === "Session"
+                    ? <p id="time-left">{timeRemaining(state.sessionValue)}</p>
+                    : <p id="time-left">{timeRemaining(state.breakValue)}</p>
+                }
             </div>
             <div className="timer-controls">
                 <button onClick={toggleStartPause} id="start_stop">Start/Pause</button>
-                <button id="reset">Reset</button>
+                <button onClick={handleReset} id="reset">Reset</button>
             </div>
         </div>
     );
