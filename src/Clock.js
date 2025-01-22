@@ -9,6 +9,7 @@ const timeRemaining = (seconds) => {// function used to display remaining time o
 };
 
 const Clock = () => {
+    const alarm = document.getElementById("beep");
     const [state, setState] = useState({// object used to store all state variables of timer
         label: "Session",
         countingDown: false,
@@ -59,8 +60,9 @@ const Clock = () => {
         }
     };
 
-    //timer reset functions
+    //timer reset function
     const handleReset = () => {// resets entire app to default state
+        resetAudio();
         setState({
             label: "Session",
             countingDown: false,
@@ -71,9 +73,20 @@ const Clock = () => {
         });
     };
 
-    // timer control functions
+    // timer control function
     const toggleStartPause = () => {
         setState(prev => ({...prev, countingDown: !state.countingDown}));
+    };
+
+    // audio functions
+    const resetAudio = () => {
+        alarm.pause();
+        alarm.currentTime = 0;
+    };
+
+    const playAudio = () => {
+        resetAudio();
+        alarm.play();
     };
 
     useEffect(() => { // ** timer using setInterval **
@@ -83,10 +96,16 @@ const Clock = () => {
             timer = setInterval(() => {
                 if (state.label === "Session") {
                     if (state.sessionValue > 0) setState(prev => ({...prev, sessionValue: state.sessionValue - 1}));
-                    else setState(prev => ({...prev, label: "Break", sessionValue: (prev.sessionTime * 60)}));
+                    else { // switch to break, play alarm
+                        playAudio();
+                        setState(prev => ({...prev, label: "Break", sessionValue: (prev.sessionTime * 60)}));
+                    }
                 } else {
                     if (state.breakValue > 0) setState(prev => ({...prev, breakValue: state.breakValue - 1}));
-                    else setState(prev => ({...prev, label: "Session", breakValue: (prev.breakTime * 60)}));
+                    else { // switch to session, play alarm
+                        playAudio();
+                        setState(prev => ({...prev, label: "Session", breakValue: (prev.breakTime * 60)}));
+                    }
                 }
             }, 1000);
         }
@@ -106,12 +125,14 @@ const Clock = () => {
                 state.label === "Session"
                     ? <p id="time-left">{timeRemaining(state.sessionValue)}</p>
                     : <p id="time-left">{timeRemaining(state.breakValue)}</p>
+                    // edit this portion of the code to display less than 1 minute left in CSS using conditionals
                 }
             </div>
             <div className="timer-controls">
                 <button onClick={toggleStartPause} id="start_stop">Start/Pause</button>
                 <button onClick={handleReset} id="reset">Reset</button>
             </div>
+            <audio id="beep" src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav" />
         </div>
     );
 };
