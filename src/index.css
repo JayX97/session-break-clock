@@ -11,3 +11,87 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#root {
+  background-color: #AFE1AF;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.App {
+  width: 100%;
+}
+
+.App > h1 {
+  font-size: 50px;
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+.clock-dials {
+  display: flex;
+  justify-content: center;
+}
+
+.dial {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.dial > h2 {
+  font-size: 30px;
+  line-height: 10px;
+}
+
+.buttons {
+  display: flex;
+  height: 32px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buttons > i {
+  font-size: 30px;
+  height: 25px;
+  margin-top: 2px;
+}
+
+.buttons > h2 {
+  font-size: 40px;
+  font-weight: normal;
+}
+
+.timer > h2 {
+  font-size: 30px;
+  margin-top: 50px;
+  margin-bottom: 0;
+}
+
+.timer > p {
+  font-size: 4em;
+  margin: 0;
+}
+
+.timer-controls {
+  margin-top: 10px;;
+}
+
+.timer-controls > i {
+  font-size: 50px;
+}
+
+i:hover {
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 25px;
+}
+
+#author-link {
+  text-decoration: none;
+  color: inherit;
+}

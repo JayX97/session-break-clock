@@ -9,9 +9,9 @@ const Dial = (props) => {
         <div className="dial">
             <h2 id={`${idLabel}-label`}>{label + " Length"}</h2>
             <div className="buttons">
-                <button id={`${idLabel}-decrement`} onClick={onDecrement}>-</button>
+                <i class="material-icons" id={`${idLabel}-decrement`} onClick={onDecrement}>arrow_downward</i>
                 <h2 id={`${idLabel}-length`}>{value}</h2>
-                <button id={`${idLabel}-increment`} onClick={onIncrement}>+</button>
+                <i class="material-icons" id={`${idLabel}-increment`} onClick={onIncrement}>arrow_upward</i>
             </div>
         </div>
     );

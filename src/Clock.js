@@ -129,8 +129,12 @@ const Clock = () => {
                 }
             </div>
             <div className="timer-controls">
-                <button onClick={toggleStartPause} id="start_stop">Start/Pause</button>
-                <button onClick={handleReset} id="reset">Reset</button>
+                {// ** conditional rendering to display play/pause symbol
+                state.countingDown === false
+                    ? <i class="material-icons" onClick={toggleStartPause} id="start_stop">play_arrow</i>
+                    : <i class="material-icons" onClick={toggleStartPause} id="start_stop">pause</i>
+                }
+                <i class="material-icons" onClick={handleReset} id="reset">replay</i>
             </div>
             <audio id="beep" src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav" />
         </div>
