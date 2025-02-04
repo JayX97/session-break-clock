@@ -6,7 +6,7 @@ const timeRemaining = (seconds) => {// function used to display remaining time o
     const remainingMinutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
 
-    if (seconds < 10) timerDisplay.classList.add("almost-done");
+    if (seconds < 60) timerDisplay.classList.add("almost-done");
     else timerDisplay.classList.remove("almost-done");
 
     return remainingMinutes.toString().padStart(2, '0') + ":" + remainingSeconds.toString().padStart(2, '0');
