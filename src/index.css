@@ -83,6 +83,10 @@ code {
   font-size: 50px;
 }
 
+.almost-done {
+  color: #D70040;
+}
+
 i:hover {
   cursor: pointer;
 }
