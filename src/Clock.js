@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import Dial from "./Dial.js";
 
 const timeRemaining = (seconds) => {// function used to display remaining time on timer
-    const timerDisplay = document.getElementById("time-left");
     const remainingMinutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
 
-    if (seconds < 60) timerDisplay.classList.add("almost-done");
-    else timerDisplay.classList.remove("almost-done");
-
     return remainingMinutes.toString().padStart(2, '0') + ":" + remainingSeconds.toString().padStart(2, '0');
+};
+
+const underMinute = (seconds) => {// function used for timer styling to display when timer is under a minute
+    return seconds < 60;
 };
 
 const Clock = () => {
@@ -123,12 +123,12 @@ const Clock = () => {
                 <Dial label="Session" value={state.sessionTime} onIncrement={incrementSessionTime} onDecrement={decrementSessionTime} />
                 <Dial label="Break" value={state.breakTime} onIncrement={incrementBreakTime} onDecrement={decrementBreakTime} />
             </div>
-            <div className="timer">
+            <div className="timer" id="timer">
                 <h2 id="timer-label">{state.label}</h2>
                 {// ** conditional rendering to display respective timer for label **
                 state.label === "Session"
-                    ? <p id="time-left">{timeRemaining(state.sessionValue)}</p>
-                    : <p id="time-left">{timeRemaining(state.breakValue)}</p>
+                    ? <p className={underMinute(state.sessionValue) ? "almost-done" : ""} id="time-left">{timeRemaining(state.sessionValue)}</p>
+                    : <p className={underMinute(state.breakValue) ? "almost-done" : ""} id="time-left">{timeRemaining(state.breakValue)}</p>
                     // edit this portion of the code to display less than 1 minute left in CSS using conditionals
                 }
             </div>
